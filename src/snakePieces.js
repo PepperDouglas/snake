@@ -3,6 +3,8 @@ function snakePart(width, heigth, color, x, y){
     this.heigth = heigth;
     this.x = x;
     this.y = y;
+    gameArea.context.fillStyle = color;
+    gameArea.context.fillRect(this.x, this.y, this.width, this.heigth);
 }
 
 

@@ -1,5 +1,4 @@
 import { redSnake } from "./snakeComponent";
-import { snakePart } from "./snakePieces";
 
 //the game area
 let gameArea = {
@@ -13,8 +12,18 @@ let gameArea = {
     }
 }
 
+function snakePart(width, heigth, color, snake){
+    this.width = width;
+    this.heigth = heigth;
+    this.x = x;
+    this.y = y;
+    gameArea.context.fillStyle = color;
+    gameArea.context.fillRect(this.x, this.y, this.width, this.heigth);
+}
+
 function startGame(){
     gameArea.init();
+    let playerOne = new snakePart(30, 30, 'green', 30, 30);
 
 };
 

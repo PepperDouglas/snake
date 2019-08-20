@@ -1,0 +1,23 @@
+{
+  "name": "snake",
+  "version": "1.0.0",
+  "description": "a game of snake",
+  "main": "./src/script.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PepperDouglas/snake.git"
+  },
+  "author": "Douglas Sebom",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PepperDouglas/snake/issues"
+  },
+  "homepage": "https://github.com/PepperDouglas/snake#readme",
+  "devDependencies": {
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  }
+}

@@ -1,15 +1,20 @@
 let redSnake = {
+    color : 'red',
+    width : 30,
+    height : 30,
     parts : [
         {x : 50, y : 50}
-    ],
-    color : 'red'
+    ]
 }
 
 let greenSnake = {
+    color : 'green',
+    width : 30,
+    height : 30,
     parts : [
-        {x : 30, y : 30}
-    ],
-    color : 'green'
+        {x : 30, y : 30, direction : 'RIGHT'},
+        {x : 60, y : 30, direction : 'RIGHT'}
+    ]
 }
 
 module.exports.redSnake = redSnake;

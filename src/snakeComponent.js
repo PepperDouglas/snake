@@ -12,8 +12,10 @@ let greenSnake = {
     width : 30,
     height : 30,
     parts : [
-        {x : 30, y : 30, direction : 'RIGHT'},
-        {x : 60, y : 30, direction : 'RIGHT'}
+        {x : 120, y : 30, direction : 'RIGHT'},
+        {x : 90, y : 30, direction : 'RIGHT'},
+        {x : 60, y : 30, direction : 'RIGHT'},
+        {x : 30, y : 30, direction : 'RIGHT'}
     ]
 }
 

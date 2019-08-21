@@ -1,5 +1,7 @@
 import { redSnake, greenSnake } from "./snakeComponent";
+import { redApple, blueApple } from "./appleComponent";
 let playerOne, playerTwo = {};
+let goodApple, badApple = {};
 let gameSpeed = 1;
 
 //the game area
@@ -48,13 +50,22 @@ function createPlayer(snake){
     }
 }
 
-function createApple(){
+function createApple(apple){
     this.width = apple.width;
     this.height = apple.height;
-    this.x = apple.x;
-    this.y = apple.y;
+    this.location = apple.location;
+    this.location.x = apple.position();
+    this.location.y = apple.position();
+    //this.location = apple.location[0];
+    this.update = function(){
+        gameArea.context.fillStyle = apple.color;
+        gameArea.context.fillRect(this.location.x, this.location.y, this.width, this.height);
+    }
     this.eatMe = function(){
-        
+        if(this.location.x === playerOne.parts[0].x && this.location.y === playerOne.parts[0].y){
+            console.log('eaten');
+            return true;
+        }
     }
 }
 
@@ -62,6 +73,7 @@ function startGame(){
     gameArea.init();
     let playerScore = 0;
     playerOne = new createPlayer(greenSnake);
+    goodApple = new createApple(redApple);
     window.addEventListener('keydown', function(e){
         switch(true){
             //extra check can be removed if we just check behind it
@@ -84,6 +96,8 @@ function startGame(){
 
 function renderFrame(){
     gameArea.clear();
+    goodApple.eatMe() ?
+        goodApple = new createApple(redApple) : goodApple.update();
     playerOne.update();
 }
 

@@ -2,7 +2,7 @@ import { redSnake, greenSnake } from "./snakeComponent";
 import { redApple, blueApple } from "./appleComponent";
 let playerOne, playerTwo = {};
 let goodApple, badApple = {};
-let gameSpeed = 7;
+let gameSpeed = 4;
 let playerScore = 0;
 
 //the game area
@@ -10,11 +10,11 @@ let gameArea = {
     canvas : document.createElement('canvas'),
     area : document.getElementsByClassName('playArea')[0],
     init : function() {
-        this.canvas.width = 420;
-        this.canvas.height = 420;
+        this.canvas.width = 660;
+        this.canvas.height = 660;
         this.context = this.canvas.getContext('2d');
         this.area.appendChild(this.canvas);
-        this.interval = setInterval(renderFrame, 1000/gameSpeed);
+        this.interval = setInterval(renderFrame, Math.floor(1000/gameSpeed));
     },
     clear : function(){
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -48,10 +48,35 @@ function createPlayer(snake){
             } else if (this.parts[i].direction === 'UP') {
                 this.parts[i].y += this.height;
             }
+        }
+        //self-hit
+        for (let i = 1; i < this.parts.length; i++){
+            if (this.parts[0].x === this.parts[i].x && this.parts[0].y === this.parts[i].y){
+                clearInterval(gameArea.interval);
+                goodApple, playerOne = {};
+                //gameArea.clear();
+                return;
+            }
+        }
+        //this part only active if !powerup
+        this.parts[0].x < playerOne.width ? endGame() :
+            this.parts[0].x > gameArea.canvas.width - playerOne.width ? endGame() :
+                this.parts[0].y < playerOne.height ? endGame() :
+                    this.parts[0].y > gameArea.canvas.height - playerOne.height ? endGame () :
+                        null;
+
+        for (let i = 0; i < this.parts.length; i++){
             gameArea.context.fillStyle = snake.color;
             gameArea.context.fillRect(this.parts[i].x, this.parts[i].y, this.width, this.height);
         }
     }
+}
+
+let endGame = () => {
+    clearInterval(gameArea.interval);
+    //gameArea.clear();
+    goodApple, playerOne = {};
+    return;
 }
 
 function createApple(apple){
@@ -60,8 +85,16 @@ function createApple(apple){
     this.location = apple.location;
     this.location.x = apple.position();
     this.location.y = apple.position();
-    //this.location = apple.location[0];
     this.update = function(){
+        (function noOverlap(){
+            for (let i = 0; i < playerOne.parts.length; i++){
+                if (redApple.location.x === playerOne.parts[i].x && redApple.location.y === playerOne.parts[i].y){
+                    redApple.location.x = apple.position();
+                    redApple.location.y = apple.position();
+                    noOverlap();
+                }
+            }
+        })();
         gameArea.context.fillStyle = apple.color;
         gameArea.context.fillRect(this.location.x, this.location.y, this.width, this.height);
     }
@@ -69,20 +102,18 @@ function createApple(apple){
         if(this.location.x === playerOne.parts[0].x && this.location.y === playerOne.parts[0].y){
             playerScore += gameSpeed;
             let tailLocation = [playerOne.parts[playerOne.parts.length - 1].x, playerOne.parts[playerOne.parts.length - 1].y];
-            console.log('eaten');
             setTimeout(function(){
                 playerOne.parts.push({
                     x : tailLocation[0],
                     y : tailLocation[1],
                     direction : null});
-                console.log(playerOne.parts);
-            }, 1000/gameSpeed);
+            }, Math.floor(1000/gameSpeed));
             return true;
         }
         return false;
     }
 }
-//playerOne.parts[playerOne.parts.length - 1].y eatme x/y
+
 function startGame(){
     gameArea.init();
     playerOne = new createPlayer(greenSnake);
@@ -106,10 +137,20 @@ function startGame(){
     })
 };
 
+function borderControl(){
+    gameArea.context.fillStyle = 'black';
+    gameArea.context.fillRect(0, 0, gameArea.canvas.width, 30);
+    gameArea.context.fillRect(0, 0, 30, gameArea.canvas.height);
+    gameArea.context.fillRect(0, gameArea.canvas.height - 30, gameArea.canvas.width, gameArea.canvas.width);
+    gameArea.context.fillRect(gameArea.canvas.width - 30, 0, gameArea.canvas.width, gameArea.canvas.height);
+}
+
 
 function renderFrame(){
     gameArea.clear();
+    borderControl();
     playerOne.update();
+    //if (!playerOne){ return };
     goodApple.eatMe() ?
         goodApple = new createApple(redApple) : goodApple.update();
 }

@@ -1,11 +1,27 @@
 import { redSnake, greenSnake } from "./snakeComponent";
 import { redApple, blueApple } from "./appleComponent";
+import { getScoreTable, putScoreTable } from "./scoreControl";
 let playerOne, playerTwo = {};
 let goodApple, badApple = {};
-let gameSpeed = 4;
+let gameSpeed = 5;
 let playerScore = 0;
+let scoreTable = getScoreTable();
+console.log(scoreTable);
 
-//the game area
+function updateHighScore(num){
+    let R = num;
+    for (let i = 0; i < scoreTable.length; i++){
+        if (num > scoreTable[i].score){
+            num = scoreTable[i].score;
+            scoreTable[i].score = R;
+            updateHighScore(num);
+            return scoreTable;
+        }
+    }
+    return scoreTable;
+}
+
+
 let gameArea = {
     canvas : document.createElement('canvas'),
     area : document.getElementsByClassName('playArea')[0],
@@ -52,9 +68,11 @@ function createPlayer(snake){
         //self-hit
         for (let i = 1; i < this.parts.length; i++){
             if (this.parts[0].x === this.parts[i].x && this.parts[0].y === this.parts[i].y){
+                scoreTable = updateHighScore(playerScore);
+                displayScore();
+                putScoreTable(scoreTable);
                 clearInterval(gameArea.interval);
                 goodApple, playerOne = {};
-                //gameArea.clear();
                 return;
             }
         }
@@ -73,8 +91,10 @@ function createPlayer(snake){
 }
 
 let endGame = () => {
+    scoreTable = updateHighScore(playerScore);
+    displayScore();
+    putScoreTable(scoreTable);
     clearInterval(gameArea.interval);
-    //gameArea.clear();
     goodApple, playerOne = {};
     return;
 }
@@ -102,6 +122,7 @@ function createApple(apple){
         if(this.location.x === playerOne.parts[0].x && this.location.y === playerOne.parts[0].y){
             playerScore += gameSpeed;
             let tailLocation = [playerOne.parts[playerOne.parts.length - 1].x, playerOne.parts[playerOne.parts.length - 1].y];
+            //snake break here?
             setTimeout(function(){
                 playerOne.parts.push({
                     x : tailLocation[0],
@@ -119,23 +140,34 @@ function startGame(){
     playerOne = new createPlayer(greenSnake);
     goodApple = new createApple(redApple);
     window.addEventListener('keydown', function(e){
+        let belowCheck = playerOne.parts[0].y + playerOne.height !== playerOne.parts[1].y;
+        let rightCheck = playerOne.parts[0].x + playerOne.width !== playerOne.parts[1].x;
+        let leftCheck = playerOne.parts[0].x - playerOne.width !== playerOne.parts[1].x;
+        let topCheck = playerOne.parts[0].y - playerOne.width !== playerOne.parts[1].y;
+        console.log(belowCheck, rightCheck, leftCheck, topCheck);
         switch(true){
-            //extra check can be removed if we just check behind it
-            case e.keyCode === 37 && playerOne.direction !== 'RIGHT' : 
+            case e.keyCode === 37 && leftCheck : 
                 playerOne.direction = 'LEFT';
             break;
-            case e.keyCode === 38 && playerOne.direction !== 'UP' :
+            case e.keyCode === 38 && topCheck :
                 playerOne.direction = 'DOWN';
             break;
-            case e.keyCode === 39 && playerOne.direction !== 'LEFT' :
+            case e.keyCode === 39 && rightCheck :
                 playerOne.direction = 'RIGHT';
             break;
-            case e.keyCode === 40 && playerOne.direction !== 'DOWN' :
+            case e.keyCode === 40 && belowCheck :
                 playerOne.direction = 'UP';
             break;
         }
     })
 };
+
+function displayScore(){
+    let scoreText = 
+        `<p>1st: ${scoreTable[0].score}</p><p>2nd: ${scoreTable[1].score}</p>
+        <p>3rd: ${scoreTable[2].score}</p><p>4th: ${scoreTable[3].score}</p>`;
+    document.getElementsByClassName('scoreHistory')[0].innerHTML = scoreText;
+}
 
 function borderControl(){
     gameArea.context.fillStyle = 'black';
@@ -150,9 +182,9 @@ function renderFrame(){
     gameArea.clear();
     borderControl();
     playerOne.update();
-    //if (!playerOne){ return };
     goodApple.eatMe() ?
         goodApple = new createApple(redApple) : goodApple.update();
+    document.getElementsByClassName('highScore')[0].innerText = playerScore;
 }
 
 startGame();

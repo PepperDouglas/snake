@@ -5,7 +5,7 @@ let redApple = {
     location : 
         {x : null, y : null},
     position() {
-        return Math.ceil(Math.random()*10)*30;
+        return Math.ceil(Math.random()*20)*30;
     }
 }
 

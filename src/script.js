@@ -3,7 +3,7 @@ import { redApple, blueApple } from "./appleComponent";
 import { getScoreTable, putScoreTable } from "./scoreControl";
 let playerOne, playerTwo = {};
 let goodApple, badApple = {};
-let gameSpeed = 5;
+let gameSpeed = 4;
 let playerScore = 0;
 let scoreTable = getScoreTable();
 console.log(scoreTable);
@@ -78,9 +78,9 @@ function createPlayer(snake){
         }
         //this part only active if !powerup
         this.parts[0].x < playerOne.width ? endGame() :
-            this.parts[0].x > gameArea.canvas.width - playerOne.width ? endGame() :
+            this.parts[0].x > gameArea.canvas.width - playerOne.width * 2 ? endGame() :
                 this.parts[0].y < playerOne.height ? endGame() :
-                    this.parts[0].y > gameArea.canvas.height - playerOne.height ? endGame () :
+                    this.parts[0].y > gameArea.canvas.height - playerOne.height * 2 ? endGame () :
                         null;
 
         for (let i = 0; i < this.parts.length; i++){

@@ -18,5 +18,7 @@ let blueApple = {
     ]
 }
 
+// export { blueApple, redApple };
+
 module.exports.blueApple = blueApple;
 module.exports.redApple = redApple;

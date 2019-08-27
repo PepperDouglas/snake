@@ -1,6 +1,7 @@
 import { redSnake, greenSnake } from "./snakeComponent";
 import { redApple, blueApple } from "./appleComponent";
 import { getScoreTable, putScoreTable } from "./scoreControl";
+// unused variables declared : redSnake, blueApple, playerTwo, badApple
 let playerOne, playerTwo = {};
 let goodApple, badApple = {};
 let gameSpeed = 4;
@@ -21,7 +22,7 @@ function updateHighScore(num){
     return scoreTable;
 }
 
-
+// should be const, goes for all non primitives
 let gameArea = {
     canvas : document.createElement('canvas'),
     area : document.getElementsByClassName('playArea')[0],
@@ -30,6 +31,7 @@ let gameArea = {
         this.canvas.height = 660;
         this.context = this.canvas.getContext('2d');
         this.area.appendChild(this.canvas);
+        // setInterval vs requestAnimationFrame
         this.interval = setInterval(renderFrame, Math.floor(1000/gameSpeed));
     },
     clear : function(){
@@ -73,6 +75,7 @@ function createPlayer(snake){
                 putScoreTable(scoreTable);
                 clearInterval(gameArea.interval);
                 goodApple, playerOne = {};
+                console.log(goodApple);
                 return;
             }
         }
@@ -95,6 +98,7 @@ let endGame = () => {
     displayScore();
     putScoreTable(scoreTable);
     clearInterval(gameArea.interval);
+    // goodApple changes the value?
     goodApple, playerOne = {};
     return;
 }
@@ -106,15 +110,25 @@ function createApple(apple){
     this.location.x = apple.position();
     this.location.y = apple.position();
     this.update = function(){
-        (function noOverlap(){
-            for (let i = 0; i < playerOne.parts.length; i++){
-                if (redApple.location.x === playerOne.parts[i].x && redApple.location.y === playerOne.parts[i].y){
+        function noOverlap(){
+            // preference, looks a bit "cleaner"
+            playerOne.parts.forEach(part => {
+                if (redApple.location.x === part.x && redApple.location.y === part.y){
                     redApple.location.x = apple.position();
                     redApple.location.y = apple.position();
                     noOverlap();
                 }
-            }
-        })();
+            })
+            // for (let i = 0; i < playerOne.parts.length; i++){
+            //     if (redApple.location.x === playerOne.parts[i].x && redApple.location.y === playerOne.parts[i].y){
+            //         redApple.location.x = apple.position();
+            //         redApple.location.y = apple.position();
+            //         noOverlap();
+            //     }
+            // }
+        };
+
+        noOverlap();
         gameArea.context.fillStyle = apple.color;
         gameArea.context.fillRect(this.location.x, this.location.y, this.width, this.height);
     }
@@ -182,6 +196,7 @@ function renderFrame(){
     gameArea.clear();
     borderControl();
     playerOne.update();
+    // eatMe breaks when I hit the wall
     goodApple.eatMe() ?
         goodApple = new createApple(redApple) : goodApple.update();
     document.getElementsByClassName('highScore')[0].innerText = playerScore;

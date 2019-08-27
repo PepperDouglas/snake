@@ -4,7 +4,8 @@
   "description": "a game of snake",
   "main": "./src/script.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
